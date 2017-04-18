@@ -20,8 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307 USA
 #
-include $(ANDROID_BUILD_TOP)/$(RDA_TARGET_DEVICE_DIR)/../$(TARGET_PRODUCT).mk
-include $(ANDROID_BUILD_TOP)/$(RDA_TARGET_DEVICE_DIR)/customer.mk
+include $(TOPDIR)/slt.mk
+include $(TOPDIR)/customer.mk
 include $(TOPDIR)/board/$(SOC)/$(BOARD)/config.mk
 
 image_flags :=
@@ -93,7 +93,4 @@ endif
 
 PLATFORM_CPPFLAGS += $(image_flags) $(pdl_flags) $(build_variant_flags) $(nand_flags)
 
-PLATFORM_CPPFLAGS += -I$(ANDROID_BUILD_TOP)/$(RDA_TARGET_DEVICE_DIR)/include
-#TODO -remove this!
-PLATFORM_CPPFLAGS += -I$(ANDROID_BUILD_TOP)/$(RDA_TARGET_DEVICE_DIR)/../../driver/panel
-
+PLATFORM_CPPFLAGS += -I$(TOPDIR)/include_rda

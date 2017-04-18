@@ -33,7 +33,7 @@ else
 COBJS-$(CONFIG_MACH_RDA8810) += hal_config.o
 endif
 
-RDA_TARGET_DEF_FILE := $(ANDROID_BUILD_TOP)/$(RDA_TARGET_DEVICE_DIR)/target.def
+RDA_TARGET_DEF_FILE := $(TOPDIR)/target-device.def
 RDA_GET_MAKEFILE_VAR_FUNC = $(strip $(shell sed -n 's/^[ 	]*$(1)[ 	]*[?:]\?=\([^\#]\+\)\#*.*$$/\1/p' $(2)))
 
 NUMBER_OF_SIM := $(call RDA_GET_MAKEFILE_VAR_FUNC,NUMBER_OF_SIM,$(RDA_TARGET_DEF_FILE))
