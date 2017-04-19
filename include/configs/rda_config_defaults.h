@@ -55,9 +55,12 @@
  */
 #define CONFIG_MMC
 #define CONFIG_EFI_PARTITION
+#define CONFIG_DOS_PARTITION
 /*#define CONFIG_RDA_MMC_LEGACY*/
 #define CONFIG_GENERIC_MMC
 #define CONFIG_RDA_MMC
+#define CONFIG_CMD_FAT
+#define CONFIG_CMD_EXT2
 /*
  * ROM in U0B chips cannot provide information on the booting media, whereas
  * SPL and U-BOOT must know the media type. The macro, CONFIG_SDMMC_BOOT,
@@ -128,8 +131,6 @@
 #define MUSB_NO_MULTIPOINT
 #define CONFIG_CMD_USB
 #define CONFIG_USB_STORAGE
-#define CONFIG_CMD_STORAGE
-#define CONFIG_CMD_FAT
 #define CONFIG_FAT_WRITE
 #endif
 /*
@@ -166,12 +167,12 @@
 /*
  * U-boot USB Configuration
  */
+
 #ifdef CONFIG_MUSB_UDC
 #define CONFIG_USB_FASTBOOT
 #define CONFIG_MUSB_DMA
 #define CONFIG_CMD_FASTBOOT
 #define CONFIG_CMD_PDL2
-
 #define SCRATCH_ADDR			(PHYS_SDRAM_1 + 0x02000000)	/* leave 32M for boot and test */
 #define FB_DOWNLOAD_BUF_SIZE		(PHYS_SDRAM_1_SIZE - 0x02000000 - 0x800000)	/* 216M */
 #endif
@@ -204,6 +205,7 @@
 #define CONFIG_CMD_NAND_YAFFS
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
+#define CONFIG_CMD_SOURCE
 #define CONFIG_RBTREE
 
 /*#define CONFIG_YAFFS2*/
@@ -216,10 +218,6 @@
  * U-BOOT library
  */
 #define CONFIG_USE_ARCH_MEMCPY		1
-
-#ifndef EXTRA_BOOTCOMMAND
-#define EXTRA_BOOTCOMMAND "selinux=0"
-#endif
 /*
  * communication code between modem and ap
  */
@@ -266,103 +264,29 @@
 // #define CONFIG_SERIAL_TAG
 
 /* The delay to check whether to stop auto boot */
-#ifdef CONFIG_UBOOT_VARIANT_DEBUG
 #define CONFIG_BOOTDELAY		1
-#else
-#define CONFIG_BOOTDELAY		0
-#endif
-#if 0
 #define CONFIG_ZERO_BOOTDELAY_CHECK
-#else
-#define CONFIG_AUTOBOOT_KEYED
-#define CONFIG_AUTOBOOT_STOP_STR	"\n"
-#define CONFIG_AUTOBOOT_STOP_STR2	"\r"
-#endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS	\
-	"add_all_mtd=setenv bootargs $bootargs " MTDPARTS_DEFAULT "\0"\
-	"add_kernel_mtd=setenv bootargs $bootargs " MTDPARTS_KERNEL_DEFAULT "\0"\
-	"add_serialno=setenv bootargs $bootargs " "androidboot.serialno=$serialno"\
+	"load_addr=80100000\0" \
+	"script_addr=81000000\0" \
+	"kernel_addr=82000000\0" \
+	"initrd_addr=83000000\0" \
+	"modem_addr=70000000\0" \
+	"boot_device=mmc\0" \
 	""
 
 #define CONFIG_BOOTARGS			\
 	"mem="MK_STR(MEM_SIZE)"M "		\
-	" "EXTRA_BOOTCOMMAND" "		\
 	"console=ttyS0," MK_STR(CONFIG_BAUDRATE) " "	\
 	"root=/dev/ram rw "		\
 	"rdinit=/init"
 
-#define CONFIG_PREBOOT			\
-	"rdabminit && "			\
-	"adjust_bootdelay && "		\
-	"mtdparts default && "		\
-	"get_flash_intf && "			\
-	"get_emmc_id && " \
-	"rdachkfactag"
-
 #define CONFIG_BOOTCOMMAND		\
-	"mux_config && "		\
-	"setenv bootargs $bootargs $flash_if $emmc_id &&"	\
-	"run add_serialno &&"	\
-	"if test $bootmode -eq 0; then "\
-		"echo NORMAL BOOT && "	\
-		"get_lcd_name && "	\
-		"setenv bootargs $bootargs $lcd &&"	\
-		"run add_kernel_mtd && "	\
-		"mdcom_loadf 0 && "	\
-		"mdcom_check 1 && "	\
-		"load_boot && "		\
-		"get_android_bm && "	\
-		"if test $chargerboot -eq 1; then "\
-			"echo CHARGER BOOT &&" \
-			"load_ap_recovery;"\
-		"else true; fi && "     \
-		"get_bootlogo_name && "	\
-		"setenv bootargs $bootargs $androidboot $bootlogo &&"	\
-		"abootm 82000000;"	\
-	"else true; fi && "		\
-	"if test $bootmode -eq 1; then "\
-		"echo CALIBRATION && "	\
-		"mdcom_loadf 1 && "	\
-		"mdcom_check 0 && "		\
-		"mdcom_cal;"		\
-	"else true; fi && "		\
-	"if test $bootmode -eq 2; then "\
-		"echo FACTORY && "	\
-		"get_lcd_name && "	\
-		"setenv bootargs $bootargs $lcd &&"	\
-		"run add_all_mtd && "	\
-		"load_recovery && " \
-		"get_android_bm && "	\
-		"get_bootlogo_name && "	\
-		"setenv bootargs $bootargs $androidboot $bootlogo &&"	\
-		"abootm 82000000;"	\
-	"else true; fi && "		\
-	"if test $bootmode -eq 3; then "\
-		"echo FASTBOOT && "	\
-		"fastboot;"		\
-	"else true; fi && "		\
-	"if test $bootmode -eq 4; then "\
-		"echo RECOVERY && "	\
-		"get_lcd_name && "	\
-		"setenv bootargs $bootargs $lcd &&"	\
-		"run add_all_mtd && "	\
-		"load_recovery && " \
-		"get_android_bm && "	\
-		"get_bootlogo_name && "	\
-		"setenv bootargs $bootargs $androidboot $bootlogo &&"	\
-		"abootm 82000000;"	\
-	"else true; fi && "		\
-	"if test $bootmode -eq 5; then "\
-		"echo AUTOCALL && "	\
-		"mdcom_loadf 0 && "	\
-		"mdcom_check 0 && "		\
-		"mdcom_cal;"		\
-	"else true; fi &&"		\
-	"if test $bootmode -eq 6; then "\
-		"echo force downloading && "	\
-		"pdl2;"		\
-	"else true; fi"
+	"mux_config; "		\
+	"mmc dev 0; "		\
+	"ext2load mmc 0:1 ${script_addr} boot.scr && source ${script_addr};" \
+	"echo Running boot script failed;"
 
 #endif /* !CONFIG_SPL_BUILD */
 
