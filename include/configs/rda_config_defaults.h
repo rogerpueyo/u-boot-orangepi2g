@@ -246,8 +246,6 @@
 #undef CONFIG_BOOTM_NETBSD
 #undef CONFIG_BOOTM_RTEMS
 
-#define CONFIG_ZLIB
-#define CONFIG_GZIP
 #define CONFIG_LZO
 
 /*
