@@ -206,6 +206,7 @@
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_CMD_SOURCE
+#define CONFIG_CMD_BOOTZ
 #define CONFIG_RBTREE
 
 /*#define CONFIG_YAFFS2*/
