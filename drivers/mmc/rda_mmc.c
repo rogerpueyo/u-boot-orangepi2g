@@ -21,9 +21,9 @@
 #endif
 
 #define SECOND                    * CONFIG_SYS_HZ_CLOCK
-#define MCD_CMD_TIMEOUT           ( 1 SECOND / 10 )
-#define MCD_RESP_TIMEOUT          ( 1 SECOND / 10 )
-#define MCD_DATA_TIMEOUT          ( 1 SECOND )
+#define MCD_CMD_TIMEOUT           ( 2 SECOND / 10 )
+#define MCD_RESP_TIMEOUT          ( 2 SECOND / 10 )
+#define MCD_DATA_TIMEOUT          ( 2 SECOND )
 #define MMC_DEV_NUM 2
 struct mmc_host {
 	int dev_num;
