@@ -8,6 +8,8 @@
  */
 #define CONFIG_MACH_RDA8810
 
+#define CONFIG_MACH_TYPE (5002)
+
 /*
  * Flash & Environment
  */

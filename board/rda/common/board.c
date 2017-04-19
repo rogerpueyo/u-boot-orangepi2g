@@ -3,6 +3,9 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+#define PHYS_SDRAM_1			(0x80000000) /* DRAM Start */
+#define LINUX_BOOT_PARAM_ADDR		(PHYS_SDRAM_1 + 0x100)
+
 #ifdef CONFIG_MACH_RDA8810
 #define BOARD_NAME	"RDA8810"
 #elif defined(CONFIG_MACH_RDA8810E)
@@ -39,6 +42,7 @@ int board_init(void)
 {
 	/* arch number of the board */
 	gd->bd->bi_arch_number = machine_arch_type;
+	gd->bd->bi_boot_params = LINUX_BOOT_PARAM_ADDR;
 	return 0;
 }
 

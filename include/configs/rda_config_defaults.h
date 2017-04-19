@@ -245,14 +245,10 @@
 
 #undef CONFIG_BOOTM_NETBSD
 #undef CONFIG_BOOTM_RTEMS
-#undef CONFIG_GZIP
-#undef CONFIG_ZLIB
 
-#ifdef CONFIG_CMD_UBI
 #define CONFIG_ZLIB
 #define CONFIG_GZIP
 #define CONFIG_LZO
-#endif
 
 /*
  * Linux Information
